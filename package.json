@@ -1,0 +1,14 @@
+{
+  "name": "sphinx-client-electron",
+  "version": "1.0.0",
+  "description": "SPHINX Electron Client",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Christopher Price (crprice***REMOVED***)",
+  "license": "SEE LICENSE IN LICENSE",
+  "devDependencies": {
+    "electron": "^4.0.8"
+  }
+}
