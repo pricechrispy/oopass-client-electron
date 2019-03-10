@@ -14,7 +14,7 @@ let browser_window_properties = {
     resizable: false,
     maximizable: false,
     fullscreenable: false,
-    icon: 'img/icon.png',
+    icon: __dirname + '/img/icon.png',
     webPreferences: {
         devTools: true,
         nodeIntegration: true,
