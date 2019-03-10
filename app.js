@@ -10,8 +10,16 @@ let win = null;
 let browser_window_properties = {
     width: 1280,
     height: 720,
+    frame: true,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    icon: 'img/icon.png',
     webPreferences: {
-        nodeIntegration: true
+        devTools: true,
+        nodeIntegration: true,
+        nodeIntegrationInWorker: false,
+        //preload: 'js/test.js'
     }
 };
 
@@ -36,11 +44,14 @@ let create_browser_window = function() {
     {
         // Create the browser window.
         win = new BrowserWindow( browser_window_properties );
+        
+        // Set additional properties.
+        win.setMenuBarVisibility(false);
 
-        // and load the index.html of the app.
+        // Load the index.html of the app.
         win.loadFile('index.html');
 
-        // Open the DevTools.
+        // Open the DevTools if allowed in window properties.
         win.webContents.openDevTools();
 
         // Emitted when the window is closed.
