@@ -128,7 +128,8 @@ html, body {
     padding: 0px 18px;
     padding-top: 14px;
     font-size: 0.9em;
-    font-family: arial, helvetica, sans-serif;
+    /*font-family: arial, helvetica, sans-serif;*/
+    font-family: 'Open Sans', sans-serif;
     user-select: none;
 }
 
