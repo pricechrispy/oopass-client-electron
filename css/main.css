@@ -91,20 +91,100 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+html, body {
+    overflow: hidden;
+}
 
+.theme-wrapper {
+    padding: 18px 18px;
+    font-size: 0.9em;
+    font-family: arial, helvetica, sans-serif;
+    user-select: none;
+}
 
+.theme-wrapper span {
+    color: #000000;
+}
 
+.theme-wrapper .notice {
+    padding: 0px 20px;
+}
 
+.theme-wrapper .notice span {
+    color: #575757;
+}
 
+.theme-wrapper .text {
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid #575757;
+    border-radius: 10px;
+    width: 100%;
+    padding: 2px 8px;
+}
 
+.theme-wrapper .text::placeholder {
+    color: #000000;
+}
 
+.theme-wrapper .take-action {
+    background-color: #404040;
+    border: none;
+    border-radius: 8px;
+    text-align: center;
+}
 
+.theme-wrapper .take-action span {
+    color: #FFFFFF;
+}
 
+.main .take-action {
+    display: table-cell;
+    vertical-align: middle;
+    height: 70px;
+}
 
+.spacer-point25em {
+    height: 0.25em;
+}
 
+.text-parent {
+    padding: 0px 4px;
+}
 
+.master-password {
+    padding: 0.5em 0em;
+}
 
+.master-password .text {
+    border: 2px solid #000000;
+}
 
+.master-password .text::placeholder {
+    color: #404040;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.main .flex-row {
+    align-items: flex-end;
+}
+
+.main .flex-row .text::placeholder {
+    color: #404040;
+}
+
+.main .flex-row .panel-left {
+    flex: 2;
+}
+
+.main .flex-row .panel-right {
+    flex: 1;
+}
 
  /* ==========================================================================
    Helper classes

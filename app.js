@@ -8,8 +8,8 @@ const { app, BrowserWindow, session } = require('electron');
 let win = null;
 
 let browser_window_properties = {
-    width: 1280,
-    height: 720,
+    width: 320,
+    height: 240,
     frame: true,
     resizable: false,
     maximizable: false,

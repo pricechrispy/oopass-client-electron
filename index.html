@@ -12,13 +12,47 @@
         <meta name="theme-color" content="#fafafa">
     </head>
     <body>
-        <span>SPHINX Electron Client</span>
-        <br>
-        <span id="version_info">
-            We are using node <script>document.write(process.versions.node)</script>,
-            Chrome <script>document.write(process.versions.chrome)</script>,
-            and Electron <script>document.write(process.versions.electron)</script>.
-        </span>
+        <div class="theme-wrapper main">
+            <div>
+                <span>Sphinx Password Manager</span>
+            </div>
+            <div class="notice">
+                <span>Key expired from memory, master password is required</span>
+            </div>
+            
+            <div class="master-password">
+                <div>
+                    <label for="master-password"><span>Enter Master Password:</span></label>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="master-password" type="text" name="master-password" value="" placeholder="Type here" />
+                </div>
+            </div>
+                
+            <div class="flex-row">
+                <div class="panel-left">
+                    <div>
+                        <label for="auth-domain"><span>Enter location phrase:</span></label>
+                    </div>
+                    <div class="text-parent">
+                        <input class="text" id="auth-domain" type="text" name="auth-domain" value="" placeholder="gmail.com" />
+                    </div>
+                    
+                    <div class="spacer-point25em"></div>
+                    
+                    <div>
+                        <label for="auth-user"><span>Enter service user:</span></label>
+                    </div>
+                    <div class="text-parent">
+                        <input class="text" id="auth-user" type="text" name="auth-user" value="" placeholder="username" />
+                    </div>
+                </div>
+                
+                <div class="panel-right">
+                    <div class="take-action" id="copy-clipboard"><span>Copy to Clipboard</span></div>
+                </div>
+            </div>
+        </div>
 
         <script src="js/vendor/jquery-3.3.1.min.js"></script>
         <script src="js/main.js"></script>
