@@ -110,6 +110,20 @@ html, body {
     background: #404040;
 }
 
+.action-hide {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    width: 16px;
+    height: 4px;
+    background: #000000;
+    cursor: pointer;
+}
+
+.action-hide:hover {
+    background: #404040;
+}
+
 .theme-wrapper {
     padding: 0px 18px;
     padding-top: 14px;
