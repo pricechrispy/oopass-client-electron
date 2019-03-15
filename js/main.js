@@ -11,6 +11,7 @@ console.log( 'jQuery v' + _jquery_version );
 
 let _nrequire = window.nodeRequire;
 
+const { clipboard } = _nrequire('electron');
 const { BrowserWindow } = _nrequire('electron').remote;
 
 let win = _nrequire('electron').remote.getCurrentWindow();
@@ -60,7 +61,23 @@ let handle_win_hide = function() {
 };
 
 let handle_get_password = function() {
-    $( 'span', this ).html('Please<br>Wait...');
+    let button_span = $( 'span', this );
+    button_span.html('Please<br>Wait...');
+    
+    window.setTimeout( function() {
+        clipboard.writeText('_TEST_PASSWORD_');
+        
+        button_span.html('Copied to Clipboard!');
+        
+        window.setTimeout( function() {
+            clipboard.writeText('_');
+            //clipboard.writeText(' ');
+            //clipboard.writeText('');
+            //clipboard.clear();
+            
+            button_span.html('Password<br>Cleared');
+        }, 5000 );
+    }, 800 );
 };
 
 $('.action-hide').on( 'click', handle_win_hide );
