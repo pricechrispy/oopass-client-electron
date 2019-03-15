@@ -26,6 +26,14 @@ let handle_window_closed_settings = function() {
     win_settings = null;
 };
 
+let handle_settings_show = function() {
+    if ( !win_settings.isVisible() )
+    {
+        win_settings.setSize( browser_window_properties_settings.width, browser_window_properties_settings.height );
+        win_settings.show();
+    }
+};
+
 let handle_open_settings = function() {
     if ( win_settings === null )
     {
@@ -39,10 +47,11 @@ let handle_open_settings = function() {
         win_settings.loadFile('settings.html');
 
         // Open the DevTools if allowed in window properties.
-        win_settings.webContents.openDevTools();
+        win_settings.webContents.openDevTools({ mode: 'detach' });
 
         // Emitted when the window is closed.
         win_settings.on( 'closed', handle_window_closed_settings );
+        win_settings.once( 'ready-to-show', handle_settings_show );
     }
 };
 
@@ -57,3 +66,21 @@ let handle_get_password = function() {
 $('.action-hide').on( 'click', handle_win_hide );
 $('.action-settings').on( 'click', handle_open_settings );
 $('.main .take-action').on( 'click', handle_get_password );
+
+let current_size = win.getSize();
+let current_width = current_size[0];
+let current_height = current_size[1];
+
+let height_shim = $(document).height() - $(window).height();
+//let height_shim = current_height_content - current_height;
+
+console.log( win.getSize() );
+console.log( height_shim );
+
+if ( height_shim > 0 )
+{
+    //win.setSize( current_width, current_height + 20 );
+    win.setSize( current_width, current_height + height_shim + 20 );
+}
+
+console.log( win.getSize() );

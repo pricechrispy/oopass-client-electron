@@ -10,6 +10,7 @@ let app_tray = null;
 let app_description = 'SPHINX Electron Client';
 
 let browser_window_properties = {
+    show: false,
     width: 320,
     height: 240,
     frame: true,
@@ -73,10 +74,11 @@ let create_browser_window = function() {
         win.loadFile('index.html');
 
         // Open the DevTools if allowed in window properties.
-        win.webContents.openDevTools();
+        win.webContents.openDevTools({ mode: 'detach' });
 
         // Emitted when the window is closed.
         win.on( 'closed', handle_window_closed );
+        win.once( 'ready-to-show', handle_tray_click_open );
     }
     
     app_tray = new Tray( browser_window_properties.icon );
