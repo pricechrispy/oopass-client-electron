@@ -4,11 +4,14 @@
   "description": "SPHINX Electron Client",
   "main": "app.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron . --ignore-certificate-errors"
   },
   "author": "Christopher Price (crprice***REMOVED***)",
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "electron": "^4.0.8"
+  },
+  "dependencies": {
+    "ecurve": "^1.0.6"
   }
 }
