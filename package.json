@@ -1,13 +1,34 @@
 {
-  "name": "sphinx-client-electron",
+  "name": "oopass-client-electron",
   "version": "1.0.0",
-  "description": "SPHINX Electron Client",
+  "description": "OOPASS Electron Client provides a client-side Electron implementation of the Oblivious Online PASSword management system utilizing the SPHINX protocol.",
   "main": "app.js",
   "scripts": {
-    "start": "electron . --ignore-certificate-errors"
+    "test": "electron . --ignore-certificate-errors",
+    "start": "electron ."
   },
-  "author": "Christopher Price (crprice***REMOVED***)",
-  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pricechrispy/oopass-client-electron.git"
+  },
+  "keywords": [
+    "oopass",
+    "password",
+    "generator",
+    "manager",
+    "oblivous",
+    "sphinx",
+    "de-pake",
+    "pake",
+    "client",
+    "electron"
+  ],
+  "author": "Christopher Price (pricechrispy***REMOVED***, crprice***REMOVED***)",
+  "license": "AGPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/pricechrispy/oopass-client-electron/issues"
+  },
+  "homepage": "https://github.com/pricechrispy/oopass-client-electron#readme",
   "devDependencies": {
     "electron": "^4.0.8"
   },

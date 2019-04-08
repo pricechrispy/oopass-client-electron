@@ -1,4 +1,15 @@
 
+/*
+OOPASS Electron Client
+Copyright (C) 2019  Christopher Price (pricechrispy***REMOVED***, crprice***REMOVED***)
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>
+*/
+
 // See README.md
 
 const { app, BrowserWindow, Menu, Tray, globalShortcut } = require('electron');
@@ -7,7 +18,7 @@ const { app, BrowserWindow, Menu, Tray, globalShortcut } = require('electron');
 // be closed automatically when the JavaScript object is garbage collected.
 let win = null;
 let app_tray = null;
-let app_description = 'SPHINX Electron Client';
+let app_description = 'OOPASS Electron Client';
 
 let browser_window_properties = {
     show: false,
