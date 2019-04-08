@@ -1,7 +1,7 @@
 
 /*
 OOPASS Electron Client
-Copyright (C) 2019  Christopher Price (pricechrispy***REMOVED***, crprice***REMOVED***)
+Copyright (C) 2019  Christopher Price (pricechrispy, crprice)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
 
@@ -93,7 +93,7 @@ let handle_get_password = function() {
     let _auth_domain = $('#auth-domain').val();
     let _auth_user = $('#auth-user').val();
     let _auth_offset = 0;
-    let _client_api_key_email = 'crprice***REMOVED***'
+    let _client_api_key_email = '_from_settings_@domain.tld'
     
     let randomRho_hex_bigi = ''; //BigInteger.fromHex( randomRho_hex )
     
@@ -104,7 +104,7 @@ let handle_get_password = function() {
     
     let node_socket_options   = {
         // NodeJS Server Master
-        host: '192.168.233.200',
+        host: '192.168.233.199',
         port: '50199'
     };
     

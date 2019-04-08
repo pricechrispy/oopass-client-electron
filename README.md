@@ -5,14 +5,14 @@ OOPASS Electron Client 1.0.0
 OOPASS Electron Client provides a client-side Electron implementation of the Oblivious Online PASSword management system utilizing the SPHINX protocol.
 
 ## Authors
-Christopher Price (pricechrispy***REMOVED***, crprice***REMOVED***)
+Christopher Price (pricechrispy, crprice)
 
 ## License
 ![AGPL3](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)
 
 OOPASS Electron Client
 
-Copyright (C) 2019  Christopher Price (pricechrispy***REMOVED***, crprice***REMOVED***)
+Copyright (C) 2019  Christopher Price (pricechrispy, crprice)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
 
