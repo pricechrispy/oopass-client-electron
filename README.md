@@ -24,7 +24,7 @@ See LICENSE.md
 
 ## Requires
 * OOPASS Server 2.0.X (Server-side Protocol): https://github.com/pricechrispy/oopass-server-nodejs
-* Electron v4.0.8 (Framework): https://github.com/electron/electron
+* Electron v7.1.2 (Framework): https://github.com/electron/electron
 * ecurve v1.0.6 (ECC Operations): https://github.com/cryptocoinjs/ecurve/
 * seedrandom v3.0.5 (Random extension): https://github.com/davidbau/seedrandom
 

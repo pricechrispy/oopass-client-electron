@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/pricechrispy/oopass-client-electron#readme",
   "devDependencies": {
-    "electron": "^4.2.12"
+    "electron": "^7.1.2"
   },
   "dependencies": {
     "ecurve": "^1.0.6",

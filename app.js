@@ -80,6 +80,7 @@ let create_browser_window = function() {
         
         // Set additional properties.
         win.setMenuBarVisibility(false);
+        Menu.setApplicationMenu(null); // work around https://github.com/electron/electron/issues/21088
 
         // Load the index.html of the app.
         win.loadFile('index.html');
