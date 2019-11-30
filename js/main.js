@@ -31,6 +31,7 @@ const { BrowserWindow } = _nrequire('electron').remote;
 const crypto = _nrequire('crypto');
 const BigInteger = _nrequire('bigi');
 const ecurve = _nrequire('ecurve');
+const seedrandom = _nrequire('seedrandom');
 
 const hmac_options = {
     algorithm:  'sha256',
@@ -85,27 +86,43 @@ let handle_win_hide = function() {
     win.hide();
 };
 
+let remove_css_runtime_classes = function( _index, _class ) {
+    return 'runtime-background-red runtime-background-green runtime-background-blue runtime-background-yellow';
+};
+
 let handle_get_password = function() {
+    let button = $( this );
     let button_span = $( 'span', this );
+    button.removeClass( remove_css_runtime_classes );
+    button.addClass('runtime-background-yellow');
     button_span.html('Please<br>Wait...');
     
     let _master_password = $('#master-password').val();
     let _auth_domain = $('#auth-domain').val();
     let _auth_user = $('#auth-user').val();
     let _auth_offset = 0;
-    let _client_api_key_email = '_from_settings_@domain.tld'
+    
+    let _client_api_key_email = '_from_settings_@domain.tld';
+    let _setting_server_ip = '192.168.233.199';
+    let _setting_server_port = '50199';
+    
+    let _available_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+    let _client_requested_length = 16;
+    let _client_requested_chars = _available_chars;
+    
+    // todo remove chars not selected in settings
     
     let randomRho_hex_bigi = ''; //BigInteger.fromHex( randomRho_hex )
     
     
     // Set default extension settings
-    let client_version = '1.0.0';
+    let client_version = '1.0.1';
     let protocol_version = '2.0.*';
     
     let node_socket_options   = {
         // NodeJS Server Master
-        host: '192.168.233.199',
-        port: '50199'
+        host: _setting_server_ip,
+        port: _setting_server_port
     };
     
     let node_socket_connection_string = 'wss://' + node_socket_options.host + ':' + node_socket_options.port;
@@ -155,8 +172,18 @@ let handle_get_password = function() {
                 console.log( 'Resolved Beta:' );
                 console.log( hashed );
                 
-                clipboard.writeText( hashed );
+                let generate_seeded_random_bytes_from_hashed = new seedrandom( hashed );
+                let pass = '';
                 
+                for ( i = 0; i < _client_requested_length; i++ )
+                {
+                    pass += _client_requested_chars[ Math.floor( generate_seeded_random_bytes_from_hashed() * _client_requested_chars.length ) ];
+                }
+                
+                clipboard.writeText( pass );
+                
+                button.removeClass( remove_css_runtime_classes );
+                button.addClass('runtime-background-green');
                 button_span.html('Copied to Clipboard!');
                 
                 window.setTimeout( function() {
@@ -165,6 +192,7 @@ let handle_get_password = function() {
                     //clipboard.writeText('');
                     //clipboard.clear();
                     
+                    button.removeClass( remove_css_runtime_classes );
                     button_span.html('Password<br>Cleared');
                 }, 5000 );
             }
@@ -172,6 +200,8 @@ let handle_get_password = function() {
             {
                 console.log( 'Point is NOT a member of curve' );
                 
+                button.removeClass( remove_css_runtime_classes );
+                button.addClass('runtime-background-red');
                 button_span.html('There was a<br>communication<br>error');
             }
             
@@ -189,6 +219,16 @@ let handle_get_password = function() {
         
         this.send('__client_' + client_version + '_connected__');
     };
+    
+    let handle_node_socket_error = function( event )
+    {
+        console.log('Socket error');
+        console.log( event );
+        
+        button.removeClass( remove_css_runtime_classes );
+        button.addClass('runtime-background-red');
+        button_span.html('There was a<br>network<br>error');
+    }
     
     let handle_node_socket_data = function( event )
     {
@@ -288,6 +328,7 @@ let handle_get_password = function() {
     
     let node_socket = new WebSocket( node_socket_connection_string );
     
+    node_socket.addEventListener( 'error', handle_node_socket_error );
     node_socket.addEventListener( 'open', handle_node_socket_opened );
     node_socket.addEventListener( 'message', handle_node_socket_data );
 };

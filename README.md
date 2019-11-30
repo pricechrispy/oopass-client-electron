@@ -1,5 +1,5 @@
 # oopass-client-electron
-OOPASS Electron Client 1.0.0
+OOPASS Electron Client 1.0.1
 
 ## Description
 OOPASS Electron Client provides a client-side Electron implementation of the Oblivious Online PASSword management system utilizing the SPHINX protocol.
@@ -26,6 +26,7 @@ See LICENSE.md
 * OOPASS Server 2.0.X (Server-side Protocol): https://github.com/pricechrispy/oopass-server-nodejs
 * Electron v4.0.8 (Framework): https://github.com/electron/electron
 * ecurve v1.0.6 (ECC Operations): https://github.com/cryptocoinjs/ecurve/
+* seedrandom v3.0.5 (Random extension): https://github.com/davidbau/seedrandom
 
 Also see package.json
 

@@ -231,6 +231,24 @@ html, body {
     flex: 4;
 }
 
+/* generics to be added / removed at runtime */
+
+.runtime-background-red {
+    background-color: #E04040 !important;
+}
+
+.runtime-background-green {
+    background-color: #40E040 !important;
+}
+
+.runtime-background-blue {
+    background-color: #4040E0 !important;
+}
+
+.runtime-background-yellow {
+    background-color: #E0E040 !important;
+}
+
  /* ==========================================================================
    Helper classes
    ========================================================================== */
