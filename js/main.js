@@ -27,12 +27,40 @@ let _nrequire = window.nodeRequire;
 const { clipboard } = _nrequire('electron');
 const { BrowserWindow } = _nrequire('electron').remote;
 
+// for APPLICATION SETTINGS
+const Store = _nrequire('electron-store');
+
 // for CRYPTOGRAPHIC OPERATIONS
 const crypto = _nrequire('crypto');
 const BigInteger = _nrequire('bigi');
 const ecurve = _nrequire('ecurve');
 const seedrandom = _nrequire('seedrandom');
 
+// initialize application settings
+const schema = {
+    api_key_email: {
+        type: 'string',
+        format: 'email'
+    },
+    server_host: {
+        type: 'string',
+        default: ''
+    },
+    server_port: {
+        type: 'string',
+        default: ''
+    },
+    cache_master_password_time: {
+        type: 'number',
+        maximum: 120,
+        minimum: 0,
+        default: 5
+	}
+};
+
+const application_settings = new Store( {schema} );
+
+// initialize ecc options
 const hmac_options = {
     algorithm:  'sha256',
     key:        '123456789abcdef03456789abcdef012'
@@ -40,6 +68,7 @@ const hmac_options = {
 
 const ec_options = ecurve.getCurveByName('secp256k1');
 
+// setup window
 let win = _nrequire('electron').remote.getCurrentWindow();
 let win_settings = null;
 
@@ -49,8 +78,28 @@ browser_window_properties_settings.parent = win;
 browser_window_properties_settings.modal = true;
 browser_window_properties_settings.height = 180;
 
+let current_size = win.getSize();
+let current_width = current_size[0];
+let current_height = current_size[1];
+
+let height_shim = $(document).height() - $(window).height();
+//let height_shim = current_height_content - current_height;
+
+//console.log( win.getSize() );
+//console.log( height_shim );
+
+if ( height_shim > 0 )
+{
+    //win.setSize( current_width, current_height + 20 );
+    win.setSize( current_width, current_height + height_shim + 20 );
+}
+
+//console.log( win.getSize() );
+
 let handle_window_closed_settings = function() {
     win_settings = null;
+    
+    console.log( application_settings.store );
 };
 
 let handle_settings_show = function() {
@@ -102,13 +151,13 @@ let handle_get_password = function() {
     let _auth_user = $('#auth-user').val();
     let _auth_offset = 0;
     
-    let _client_api_key_email = '_from_settings_@domain.tld';
-    let _setting_server_ip = '192.168.233.199';
-    let _setting_server_port = '50199';
+    let _setting_api_key_email = application_settings.get('api_key_email'); //'_from_settings_@domain.tld';
+    let _setting_server_host = application_settings.get('server_host'); //'192.168.233.199';
+    let _setting_server_port = application_settings.get('server_port'); //'50199';
     
     let _available_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-    let _client_requested_length = 16;
-    let _client_requested_chars = _available_chars;
+    let _setting_requested_length = 16;
+    let _setting_requested_chars = _available_chars;
     
     // todo remove chars not selected in settings
     
@@ -121,7 +170,7 @@ let handle_get_password = function() {
     
     let node_socket_options   = {
         // NodeJS Server Master
-        host: _setting_server_ip,
+        host: _setting_server_host,
         port: _setting_server_port
     };
     
@@ -175,9 +224,9 @@ let handle_get_password = function() {
                 let generate_seeded_random_bytes_from_hashed = new seedrandom( hashed );
                 let pass = '';
                 
-                for ( i = 0; i < _client_requested_length; i++ )
+                for ( i = 0; i < _setting_requested_length; i++ )
                 {
-                    pass += _client_requested_chars[ Math.floor( generate_seeded_random_bytes_from_hashed() * _client_requested_chars.length ) ];
+                    pass += _setting_requested_chars[ Math.floor( generate_seeded_random_bytes_from_hashed() * _setting_requested_chars.length ) ];
                 }
                 
                 clipboard.writeText( pass );
@@ -194,7 +243,7 @@ let handle_get_password = function() {
                     
                     button.removeClass( remove_css_runtime_classes );
                     button_span.html('Password<br>Cleared');
-                }, 5000 );
+                }, (application_settings.get('cache_master_password_time') * 1000) );
             }
             else
             {
@@ -316,9 +365,9 @@ let handle_get_password = function() {
             console.log('Sending Alpha + User Identifer + User Email');
             console.log( 'Alpha: ' + alpha );
             console.log( 'User Identifer: ' + user_hash_hex );
-            console.log( 'User Email: ' + _client_api_key_email );
+            console.log( 'User Email: ' + _setting_api_key_email );
             
-            let request_data = alpha + ',' + user_hash_hex + ',' + _client_api_key_email;
+            let request_data = alpha + ',' + user_hash_hex + ',' + _setting_api_key_email;
             
             this.send( request_data );
         }
@@ -336,21 +385,3 @@ let handle_get_password = function() {
 $('.action-hide').on( 'click', handle_win_hide );
 $('.action-settings').on( 'click', handle_open_settings );
 $('.main .take-action').on( 'click', handle_get_password );
-
-let current_size = win.getSize();
-let current_width = current_size[0];
-let current_height = current_size[1];
-
-let height_shim = $(document).height() - $(window).height();
-//let height_shim = current_height_content - current_height;
-
-console.log( win.getSize() );
-console.log( height_shim );
-
-if ( height_shim > 0 )
-{
-    //win.setSize( current_width, current_height + 20 );
-    win.setSize( current_width, current_height + height_shim + 20 );
-}
-
-console.log( win.getSize() );

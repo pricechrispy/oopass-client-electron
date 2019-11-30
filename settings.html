@@ -6,6 +6,7 @@
         <meta name="description" content="OOPASS Electron Client">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
+        <link rel="stylesheet" href="css/font/opensans.css">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
 
@@ -16,11 +17,22 @@
             <div>
                 <span>OOPASS Password Manager - Settings</span>
             </div>
+            <div class="notice">
+                <span>&nbsp;</span>
+            </div>
             
+            <div class="setting api_key_email">
+                <div>
+                    <label for="api_key_email"><span>Enter Email for API:</span></label>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="api_key_email" type="text" name="api_key_email" value="" placeholder="user@domain.tld" />
+                </div>
+            </div>
         </div>
         
         <script src="js/prep_node_integration.js"></script>
         <script src="js/vendor/jquery-3.3.1.min.js"></script>
-        <script src="js/main.js"></script>
+        <script src="js/settings.js"></script>
     </body>
 </html>

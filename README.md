@@ -27,6 +27,7 @@ See LICENSE.md
 * Electron v7.1.2 (Framework): https://github.com/electron/electron
 * ecurve v1.0.6 (ECC Operations): https://github.com/cryptocoinjs/ecurve/
 * seedrandom v3.0.5 (Random extension): https://github.com/davidbau/seedrandom
+* electron-store v5.1.0 (Persistent storage): https://github.com/sindresorhus/electron-store
 
 Also see package.json
 

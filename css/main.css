@@ -231,6 +231,20 @@ html, body {
     flex: 4;
 }
 
+/* settings */
+
+.setting {
+    padding: 0.5em 0em;
+}
+
+.setting .text {
+    border: 2px solid #000000;
+}
+
+.setting .text::placeholder {
+    color: #404040;
+}
+
 /* generics to be added / removed at runtime */
 
 .runtime-background-red {
