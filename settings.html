@@ -18,7 +18,7 @@
                 <span>OOPASS Password Manager - Settings</span>
             </div>
             <div class="notice">
-                <span>&nbsp;</span>
+                <span>Settings Loaded</span>
             </div>
             
             <div class="setting api_key_email">
@@ -26,7 +26,31 @@
                     <label for="api_key_email"><span>Enter Email for API:</span></label>
                 </div>
                 <div class="text-parent">
-                    <input class="text" id="api_key_email" type="text" name="api_key_email" value="" placeholder="user@domain.tld" />
+                    <input class="text" id="api_key_email" type="email" name="api_key_email" value="" placeholder="user@domain.tld" />
+                </div>
+            </div>
+            <div class="setting cache_master_password_time">
+                <div>
+                    <label for="cache_master_password_time"><span>Enter Master Password Expiration (Minutes):</span></label>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="cache_master_password_time" type="number" name="cache_master_password_time" value="" placeholder="5" min="0" max="120" />
+                </div>
+            </div>
+            <div class="setting server_host">
+                <div>
+                    <label for="server_host"><span>Enter Server (HOST/IP):</span></label>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="server_host" type="text" name="server_host" value="" placeholder="1.1.1.1" />
+                </div>
+            </div>
+            <div class="setting server_port">
+                <div>
+                    <label for="server_port"><span>Enter Server Port:</span></label>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="server_port" type="number" name="server_port" value="" placeholder="51200" min="1" max="65535" />
                 </div>
             </div>
         </div>

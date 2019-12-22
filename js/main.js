@@ -47,8 +47,10 @@ const schema = {
         default: ''
     },
     server_port: {
-        type: 'string',
-        default: ''
+        type: 'number',
+        maximum: 65535,
+        minimum: 1,
+        default: 51200
     },
     cache_master_password_time: {
         type: 'number',
