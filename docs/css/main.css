@@ -91,7 +91,18 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+html, body {
+    font-size: 1em;
+}
 
+.header .title {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.release span {
+    font-weight: bold;
+}
 
  /* ==========================================================================
    Helper classes
