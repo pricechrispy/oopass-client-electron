@@ -51,7 +51,17 @@ const schema = {
         maximum: 120,
         minimum: 0,
         default: 5
-	}
+	},
+    requested_chars: {
+        type: 'string',
+        default: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+    },
+    requested_length: {
+        type: 'number',
+        maximum: 128,
+        minimum: 6,
+        default: 16
+    }
 };
 
 const application_settings = new Store( {schema} );
@@ -104,6 +114,10 @@ let handle_setting_changed = function() {
             {
                 current_input_value = parseInt( current_input_value, 10 );
             }
+            if ( current_setting === 'requested_chars' && current_input_value.length === 0 )
+            {
+                throw new Error('Invalid character string');
+            }
             
             application_settings.set( current_setting, current_input_value );
             set_notice_success('Settings have been saved');
@@ -133,6 +147,10 @@ let handle_setting_changed = function() {
             else if ( e.message.indexOf('Config schema violation: `server_port` should be') !== -1 )
             {
                 set_notice_error('Server Port must be between 1 and 65535');
+            }
+            else if ( e.message === 'Invalid character string' )
+            {
+                set_notice_error('Desired character field must not be empty');
             }
             else
             {

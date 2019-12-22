@@ -1,5 +1,5 @@
 # oopass-client-electron
-OOPASS Electron Client 1.0.1
+OOPASS Electron Client 1.0.2
 
 ## Description
 OOPASS Electron Client provides a client-side Electron implementation of the Oblivious Online PASSword management system utilizing the SPHINX protocol.
