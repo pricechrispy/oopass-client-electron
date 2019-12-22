@@ -1,6 +1,6 @@
 {
   "name": "oopass-client-electron",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "OOPASS Electron Client provides a client-side Electron implementation of the Oblivious Online PASSword management system utilizing the SPHINX protocol.",
   "main": "app.js",
   "scripts": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/pricechrispy/oopass-client-electron#readme",
   "devDependencies": {
-    "electron": "^7.1.2"
+    "electron": "^7.1.7"
   },
   "dependencies": {
     "ecurve": "^1.0.6",

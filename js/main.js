@@ -177,7 +177,7 @@ let handle_get_password = function() {
     
     
     // Set default extension settings
-    let client_version = '1.0.2';
+    let client_version = '1.0.3';
     let protocol_version = '2.0.*';
     
     let node_socket_options   = {
