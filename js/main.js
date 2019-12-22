@@ -245,7 +245,7 @@ let handle_get_password = function() {
                     
                     button.removeClass( remove_css_runtime_classes );
                     button_span.html('Password<br>Cleared');
-                }, (application_settings.get('cache_master_password_time') * 1000) );
+                }, 15000 );
             }
             else
             {
@@ -384,6 +384,50 @@ let handle_get_password = function() {
     node_socket.addEventListener( 'message', handle_node_socket_data );
 };
 
+let master_password_timer_id = null;
+let cache_master_password_time = parseInt( application_settings.get('cache_master_password_time'), 10 ) * 60;
+
+let set_notice_timer = function()
+{
+    $('.notice span').html('Master Password will be cleared in ' + cache_master_password_time.toString() + 's...');
+};
+
+let manage_master_password_timer = function()
+{
+    cache_master_password_time -= 1;
+    
+    if ( cache_master_password_time < 0 )
+    {
+        clearInterval( master_password_timer_id );
+        master_password_timer_id = null;
+        
+        $('#master-password').val('');
+        $('.notice span').html('Master Password cleared');
+    }
+    else
+    {
+        set_notice_timer();
+    }
+};
+
+let handle_master_password_changed = function()
+{
+    if ( master_password_timer_id !== null )
+    {
+        clearInterval( master_password_timer_id );
+        master_password_timer_id = null;
+    }
+    
+    cache_master_password_time = parseInt( application_settings.get('cache_master_password_time'), 10 ) * 60;
+    
+    set_notice_timer();
+    
+    master_password_timer_id = setInterval( manage_master_password_timer, 1000 );
+};
+
 $('.action-hide').on( 'click', handle_win_hide );
 $('.action-settings').on( 'click', handle_open_settings );
 $('.main .take-action').on( 'click', handle_get_password );
+
+$('#master-password').on( 'change', handle_master_password_changed );
+$('#master-password').on( 'keyup', handle_master_password_changed );
