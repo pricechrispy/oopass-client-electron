@@ -177,7 +177,7 @@ let handle_get_password = function() {
     
     
     // Set default extension settings
-    let client_version = '1.0.3';
+    let client_version = '1.0.4';
     let protocol_version = '2.0.*';
     
     let node_socket_options   = {
@@ -385,13 +385,34 @@ let handle_get_password = function() {
         }
     };
     
-    console.log( 'Attempting socket connection to: ' + node_socket_connection_string );
-    
-    let node_socket = new WebSocket( node_socket_connection_string );
-    
-    node_socket.addEventListener( 'error', handle_node_socket_error );
-    node_socket.addEventListener( 'open', handle_node_socket_opened );
-    node_socket.addEventListener( 'message', handle_node_socket_data );
+    if ( _master_password.length < 6 )
+    {
+        button.removeClass( remove_css_runtime_classes );
+        button.addClass('runtime-background-red');
+        button_span.html('Password<br>Must Be<br>Longer >=6');
+    }
+    else if ( _auth_domain.length < 1 )
+    {
+        button.removeClass( remove_css_runtime_classes );
+        button.addClass('runtime-background-red');
+        button_span.html('Location<br>Must Be<br>Longer >=1');
+    }
+    else if ( _auth_user.length < 1 )
+    {
+        button.removeClass( remove_css_runtime_classes );
+        button.addClass('runtime-background-red');
+        button_span.html('Service<br>Must Be<br>Longer >=1');
+    }
+    else
+    {
+        console.log( 'Attempting socket connection to: ' + node_socket_connection_string );
+        
+        let node_socket = new WebSocket( node_socket_connection_string );
+        
+        node_socket.addEventListener( 'error', handle_node_socket_error );
+        node_socket.addEventListener( 'open', handle_node_socket_opened );
+        node_socket.addEventListener( 'message', handle_node_socket_data );
+    }
 };
 
 let master_password_timer_id = null;
