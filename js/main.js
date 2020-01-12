@@ -78,6 +78,7 @@ const hmac_options = {
     key:        '123456789abcdef03456789abcdef012'
 };
 
+// https://en.bitcoin.it/wiki/Secp256k1
 const ec_options = ecurve.getCurveByName('secp256k1');
 
 // setup window
@@ -171,13 +172,12 @@ let handle_get_password = function() {
     let _setting_requested_length = application_settings.get('requested_length');
     let _setting_requested_chars = application_settings.get('requested_chars');
     
-    // todo remove chars not selected in settings
-    
-    let randomRho_hex_bigi = ''; //BigInteger.fromHex( randomRho_hex )
+    // random value used to blind on send, and deblind on receive
+    let randomRho_bigi = new BigInteger();
     
     
     // Set default extension settings
-    let client_version = '1.0.4';
+    let client_version = '1.1.0';
     let protocol_version = '2.0.*';
     
     let node_socket_options   = {
@@ -212,11 +212,18 @@ let handle_get_password = function() {
             {
                 console.log( 'Point is a member of curve' );
                 
-                let rho_modinv_n = randomRho_hex_bigi.modInverse( ec_options.n );
-                let rwd_point = beta_point.multiply( rho_modinv_n );
+                
+                // CANCEL OUT RANDOM LARGE VALUE IN BETA THAT WAS USED TO BLIND ALPHA
+                
+                // aka: rwd = H'(x)^k = (beta)^(1/rho)
+                let rho_inv = randomRho_bigi.modInverse( ec_options.n );
+                let rwd_point = beta_point.multiply( rho_inv ); //ecc point multiplication (beta)^(1/rho)
                 
                 console.log( 'rwd_point.toString():' );
                 console.log( rwd_point.toString() );
+                
+                
+                // GENERATE HMAC SHA256 OF RESULTING X,Y PAIR ON CURVE AND MASTER PASSWORD AS RESULT OF OPRF EXCHANGE
                 
                 let rwd_x = rwd_point.affineX.toBuffer(32);
                 let rwd_y = rwd_point.affineY.toBuffer(32);
@@ -233,6 +240,9 @@ let handle_get_password = function() {
                 console.log( 'Resolved Beta:' );
                 console.log( hashed );
                 
+                
+                // MAP RESULT TO CONFIGURABLE PASSWORD ALPHABET
+                
                 let generate_seeded_random_bytes_from_hashed = new seedrandom( hashed );
                 let pass = '';
                 
@@ -240,6 +250,9 @@ let handle_get_password = function() {
                 {
                     pass += _setting_requested_chars[ Math.floor( generate_seeded_random_bytes_from_hashed() * _setting_requested_chars.length ) ];
                 }
+                
+                
+                // SAVE TO CLIPBOARD WITH TIMER TO CLEAR
                 
                 clipboard.writeText( pass );
                 
@@ -265,12 +278,20 @@ let handle_get_password = function() {
                 button.addClass('runtime-background-red');
                 button_span.html('There was a<br>communication<br>error');
             }
-            
-            console.log( 'Closing socket connection' );
-            
-            this.removeEventListener( 'message', handle_node_socket_received_beta );
-            this.close();
         }
+        else if ( data === 'invalid' )
+        {
+            console.log( 'Point SENT is NOT a member of curve' );
+            
+            button.removeClass( remove_css_runtime_classes );
+            button.addClass('runtime-background-red');
+            button_span.html('Error<br>Please<br>retry');
+        }
+        
+        console.log( 'Closing socket connection' );
+        
+        this.removeEventListener( 'message', handle_node_socket_received_beta );
+        this.close();
     };
     
     let handle_node_socket_opened = function( event )
@@ -305,6 +326,8 @@ let handle_get_password = function() {
             this.addEventListener( 'message', handle_node_socket_received_beta );
             
             
+            // GENERATE USER HASH TO BE BLINDED AND SENT TO SERVER
+            
             //generate hash( username+domain+ctr+password )
             let hashForOPRF = _auth_user + _auth_domain + _auth_offset + _master_password;
             
@@ -316,43 +339,112 @@ let handle_get_password = function() {
             console.log( 'hashForOPRF:' );
             console.log( hashForOPRF );
             
-            let random_seed = new Uint32Array(2);
-            window.crypto.getRandomValues( random_seed );
-            let randomRho = ( random_seed[0] + random_seed[1] ) * 3;
-            let randomRho_hex = randomRho.toString(16);
             
-            // pad if necessary
-            if ( randomRho_hex.length % 2 != 0 )
+            // GENERATE RANDOM LARGE VALUE FOR USE IN BLINDING OUR USER HASH
+            
+            let randomRho = new BigInteger();
+            randomRho = BigInteger.ONE;
+            
+            let random_seed = new Uint32Array(2); // 32 bit integers x 2
+            
+            // ensure binary length >= (256+80=336 bits) 42bytes of entropy: function bnByteLength() {return this.bitLength() >> 3}
+            // note: native JavaScript only supports integers up to 53 bits.
+            let interations_required = 0;
+            let a = new BigInteger();
+            let b = new BigInteger();
+            
+            while ( randomRho.bitLength() < 336 )
             {
-                randomRho_hex = '0' + randomRho_hex;
+                console.log( 'Current bitlength: ' + randomRho.bitLength().toString() );
+                
+                window.crypto.getRandomValues( random_seed );
+                
+                a.fromString( random_seed[0].toString() );
+                b.fromString( random_seed[1].toString() );
+                
+                randomRho = randomRho.multiply( a.multiply( b ) );
+                
+                interations_required++;
             }
             
-            console.log( 'randomRho_hex:' );
-            console.log( randomRho_hex );
+            console.log( 'Generated at least 42 bytes of entropy, iterations required: ' + interations_required.toString() );
             
-            randomRho_hex_bigi = BigInteger.fromHex( randomRho_hex );
+            //let randomRho_hex = randomRho.toString(16); // convert base 16
+            
+            //// pad if necessary for well formed hex
+            //if ( randomRho_hex.length % 2 != 0 )
+            //{
+            //    randomRho_hex = '0' + randomRho_hex;
+            //}
+            
+            //randomRho_bigi = BigInteger.fromHex( randomRho_hex );
+            randomRho_bigi = randomRho;
+            
+            console.log( 'randomRho:' );
+            console.log( randomRho );
+            console.log( 'randomRho_bigi:' );
+            console.log( randomRho_bigi );
+            
+            
+            // GENERATE BLINDED ALPHA
             
             // generate alpha = (hashForAlpha)^randomRho
-            let alpha_key = BigInteger.fromHex( hashForOPRF );
-            let alpha_mult = alpha_key.multiply( randomRho_hex_bigi );
+            // aka: alpha=H'(x)^rho
+            // power represented as point multiplication on the curve
             
-            console.log( 'alpha_key.toHex():' );
-            console.log( alpha_key.toHex() );
-            console.log( 'alpha_mult.toHex():' );
-            console.log( alpha_mult.toHex() );
+            // user hmac sha256 as integer
+            let hash_bigi = BigInteger.fromHex( hashForOPRF );
+            //let hash_buffer = hash_bigi.toBuffer(33);
             
-            let alpha_point = ec_options.G.multiply( alpha_mult );
+            //// set type for lib, see https://github.com/cryptocoinjs/ecurve/blob/master/lib/point.js#L246
+            //hash_buffer[0] = 0x02;
             
-            console.log( 'alpha.affineX: ' );
+            console.log( 'hash_bigi:' );
+            console.log( hash_bigi );
+            //console.log( 'hash_buffer:' );
+            //console.log( hash_buffer );
+            //console.log('hash_buffer.length:');
+            //console.log(hash_buffer.length);
+            //console.log('Math.floor((curve.p.bitLength() + 7) / 8):');
+            //console.log(Math.floor((ec_options.p.bitLength() + 7) / 8));
+            
+            // get x,y pair on curve using user hmac as X
+            // Bitcoin keys use the secp256k1 (info on 2.7.1) parameters.
+            // Public keys are generated by: Q=dG where Q is the public key, d is the private key, and G is a curve parameter.
+            // A public key is a 65 byte long value consisting of a leading 0x04 and X and Y coordinates of 32 bytes each.
+            // http://www.secg.org/collateral/sec2_final.pdf
+            // aka: Q = alpha_point; d = hash_bigi; G = ec_options.G
+            
+            //let alpha_point = ec_options.pointFromX( false, hash_bigi ); // false = not assume y coord odd
+            //let alpha_point = ecurve.Point.decodeFrom( ec_options, hash_buffer );
+            let alpha_point = ec_options.G.multiply( hash_bigi );
+            
+            console.log( 'alpha_point.affineX: ' );
             console.log( alpha_point.affineX );
-            console.log( 'alpha.affineY: ' );
+            console.log( 'alpha_point.affineY: ' );
             console.log( alpha_point.affineY );
+            console.log( 'ec_options.isOnCurve( alpha_point ): ');
+            console.log( ec_options.isOnCurve( alpha_point ) );
             
-            let alpha_x = alpha_point.affineX.toBuffer(32);
-            let alpha_y = alpha_point.affineY.toBuffer(32);
+            // point multiply with random large value, assumed reduction by ec_options.p
+            let alpha_mult = alpha_point.multiply( randomRho_bigi );
             
+            console.log( 'alpha_mult.affineX: ' );
+            console.log( alpha_mult.affineX );
+            console.log( 'alpha_mult.affineY: ' );
+            console.log( alpha_mult.affineY );
+            console.log( 'ec_options.isOnCurve( alpha_mult ): ');
+            console.log( ec_options.isOnCurve( alpha_mult ) );
+            
+            // get x,y pair after point multiplication as 32byte==256bit length strings
+            let alpha_x = alpha_mult.affineX.toBuffer(32);
+            let alpha_y = alpha_mult.affineY.toBuffer(32);
+            
+            // will send x,y pair to server for decoding
             let alpha = alpha_x.toString('hex') + ',' + alpha_y.toString('hex');
             
+            
+            // GENERATE UNIQUE USER ID TO ASSOCIATE EMAIL FOR GEOIP VIOLATION NOTIFICATIONS
             
             //let user_identifier = client_api_key;
             let user_identifier = '';
@@ -372,8 +464,10 @@ let handle_get_password = function() {
             user_identifier_hmac_sha256.update( user_identifier );
             
             user_hash_hex = user_identifier_hmac_sha256.digest('hex');
-    
-    
+            
+            
+            // SEND VALUES TO SERVER
+            
             console.log('Sending Alpha + User Identifer + User Email');
             console.log( 'Alpha: ' + alpha );
             console.log( 'User Identifer: ' + user_hash_hex );
