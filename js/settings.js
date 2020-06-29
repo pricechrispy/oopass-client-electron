@@ -1,7 +1,7 @@
 
 /*
 OOPASS Electron Client
-Copyright (C) 2019  Christopher Price (pricechrispy, crprice)
+Copyright (C) 2019-2020  Christopher Price (pricechrispy, crprice)
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, version 3.
 
@@ -11,60 +11,6 @@ You should have received a copy of the GNU Affero General Public License along w
 */
 
 // See README.md
-
-let _node_version = process.versions.node;
-let _chrome_version = process.versions.chrome;
-let _electron_version = process.versions.electron;
-let _jquery_version = $().jquery;
-
-console.log( 'Node v' + _node_version );
-console.log( 'Chrome v' + _chrome_version );
-console.log( 'Electron v' + _electron_version );
-console.log( 'jQuery v' + _jquery_version );
-
-let _nrequire = window.nodeRequire;
-
-const { clipboard } = _nrequire('electron');
-const { BrowserWindow } = _nrequire('electron').remote;
-
-// for APPLICATION SETTINGS
-const Store = _nrequire('electron-store');
-
-// initialize application settings
-const schema = {
-    api_key_email: {
-        type: 'string',
-        format: 'email'
-    },
-    server_host: {
-        type: 'string',
-        default: ''
-    },
-    server_port: {
-        type: 'number',
-        maximum: 65535,
-        minimum: 1,
-        default: 51200
-    },
-    cache_master_password_time: {
-        type: 'number',
-        maximum: 120,
-        minimum: 0,
-        default: 5
-	},
-    requested_chars: {
-        type: 'string',
-        default: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
-    },
-    requested_length: {
-        type: 'number',
-        maximum: 128,
-        minimum: 6,
-        default: 16
-    }
-};
-
-const application_settings = new Store( {schema} );
 
 // setup window
 let win = _nrequire('electron').remote.getCurrentWindow();
@@ -101,7 +47,7 @@ let handle_setting_changed = function() {
     let current_input = $( this );
     let current_input_value = current_input.val();
     let current_setting = current_input.attr('name');
-    let current_setting_type = schema[ current_setting ].type;
+    let current_setting_type = application_settings_schema[ current_setting ].type;
     let current_setting_value = application_settings.get( current_setting );
     
     //if ( current_setting_value !== current_input_value )
@@ -164,7 +110,7 @@ let load_application_setting = function( i )
 {
     let current_input = $( this );
     let current_setting = current_input.attr('name');
-    let current_setting_type = schema[ current_setting ].type;
+    let current_setting_type = application_settings_schema[ current_setting ].type;
     let current_setting_value = application_settings.get( current_setting );
     
     console.log('Initializing setting ' + current_setting + ':' + current_setting_type + ':"' + current_setting_value + '"');
