@@ -95,12 +95,49 @@ html, body {
     font-size: 1em;
 }
 
+body {
+    padding: 4px 6px;
+}
+
 .header .title {
     font-size: 1.4em;
     font-weight: bold;
 }
 
-.release span {
+.section .title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.release .platforms {
+    display: flex;
+}
+
+.release .platforms .header {
+    min-width: 120px;
+    background: #F0F0F0;
+}
+
+.release .platforms .header > div,
+.release .platforms .links > div {
+    padding: 2px 4px;
+}
+
+.documentation div > div {
+    display: inline-block;
+    width: 250px;
+}
+
+.documentation div > img {
+    vertical-align: top;
+}
+
+.documentation hr {
+    margin-left: 100px;
+    width: 378px;
+}
+
+.documentation .title {
     font-weight: bold;
 }
 
