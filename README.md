@@ -1,8 +1,15 @@
+<p align="center">
+    <img src="img/icon.png" alt="OOPASS Electron Client Icon" width="192px"/>
+</p>
+
 # oopass-client-electron
 OOPASS Electron Client 1.1.1
 
 ## Description
 OOPASS Electron Client provides a client-side Electron implementation of the Oblivious Online PASSword management system utilizing the SPHINX protocol.
+
+## Releases
+For packages and documentation, visit: https://pricechrispy.github.io/oopass-client-electron/.
 
 ## Authors
 Christopher Price (pricechrispy, crprice)
@@ -23,20 +30,22 @@ You should have received a copy of the GNU Affero General Public License along w
 See LICENSE.md
 
 ## Requires
-* OOPASS Server 2.0.X (Server-side Protocol): https://github.com/pricechrispy/oopass-server-nodejs
-* Electron v7.1.2 (Framework): https://github.com/electron/electron
+* OOPASS Server 2.* (Server-side Protocol): https://github.com/pricechrispy/oopass-server-nodejs
+* Electron v9.0.5 (Framework): https://github.com/electron/electron
 * ecurve v1.0.6 (ECC Operations): https://github.com/cryptocoinjs/ecurve/
 * seedrandom v3.0.5 (Random extension): https://github.com/davidbau/seedrandom
-* electron-store v5.1.0 (Persistent storage): https://github.com/sindresorhus/electron-store
+* electron-store v5.2.0 (Persistent storage): https://github.com/sindresorhus/electron-store
 
 Also see package.json
+
+This client connects to a running server-side implementation to operate, for example https://github.com/pricechrispy/oopass-server-nodejs.
 
 ## Usage
 ```bash
 npm start
-``` 
+```
 
-This client requires:
-* a server-side implementation to connect to for operation.
-
-See js/main.js for configurable options.
+## Testing
+```bash
+npm test
+```
