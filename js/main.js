@@ -79,11 +79,22 @@ let handle_win_hide = function() {
     win.hide();
 };
 
+
+// track a maximum of single socket request
+let client_version = '1.1.2';
+let protocol_version = '2.0.*';
+let node_socket = null;
+
 let remove_css_runtime_classes = function( _index, _class ) {
     return 'runtime-background-red runtime-background-green runtime-background-blue runtime-background-yellow';
 };
 
 let handle_get_password = function() {
+    if ( node_socket !== null )
+    {
+        return;
+    }
+    
     let button = $( this );
     let button_span = $( 'span', this );
     button.removeClass( remove_css_runtime_classes );
@@ -99,18 +110,16 @@ let handle_get_password = function() {
     let _setting_server_host = application_settings.get('server_host');
     let _setting_server_port = application_settings.get('server_port');
     
-    let _available_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
     let _setting_requested_length = application_settings.get('requested_length');
     let _setting_requested_chars = application_settings.get('requested_chars');
+    
+    let _cache_generated_password_time = parseInt( application_settings.get('cache_generated_password_time'), 10 ) * 1000;
     
     // random value used to blind on send, and deblind on receive
     let randomRho_bigi = new BigInteger();
     
     
-    // Set default extension settings
-    let client_version = '1.1.1';
-    let protocol_version = '2.0.*';
-    
+    // Socket settings
     let node_socket_options   = {
         // NodeJS Server Master
         host: _setting_server_host,
@@ -184,7 +193,7 @@ let handle_get_password = function() {
                 
                 
                 // SAVE TO CLIPBOARD WITH TIMER TO CLEAR
-                
+                const _previous_clipboard_text = clipboard.readText();
                 clipboard.writeText( pass );
                 
                 button.removeClass( remove_css_runtime_classes );
@@ -192,14 +201,23 @@ let handle_get_password = function() {
                 button_span.html('Copied to Clipboard!');
                 
                 window.setTimeout( function() {
-                    clipboard.writeText('_');
-                    //clipboard.writeText(' ');
-                    //clipboard.writeText('');
-                    //clipboard.clear();
+                    if ( _previous_clipboard_text.length > 0 )
+                    {
+                        clipboard.writeText( _previous_clipboard_text );
+                    }
+                    else
+                    {
+                        clipboard.writeText('_');
+                        //clipboard.writeText(' ');
+                        //clipboard.writeText('');
+                        //clipboard.clear();
+                    }
                     
                     button.removeClass( remove_css_runtime_classes );
                     button_span.html('Password<br>Cleared');
-                }, 15000 );
+                    
+                    node_socket = null;
+                }, _cache_generated_password_time );
             }
             else
             {
@@ -432,7 +450,7 @@ let handle_get_password = function() {
     {
         console.log( 'Attempting socket connection to: ' + node_socket_connection_string );
         
-        let node_socket = new WebSocket( node_socket_connection_string );
+        node_socket = new WebSocket( node_socket_connection_string );
         
         node_socket.addEventListener( 'error', handle_node_socket_error );
         node_socket.addEventListener( 'open', handle_node_socket_opened );
@@ -441,11 +459,19 @@ let handle_get_password = function() {
 };
 
 let master_password_timer_id = null;
+let master_password_len_prev = 0;
 let cache_master_password_time = parseInt( application_settings.get('cache_master_password_time'), 10 ) * 60;
 
-let set_notice_timer = function()
+let set_notice_timer = function( reset = false )
 {
-    $('.notice span').html('Master Password will be cleared in ' + cache_master_password_time.toString() + 's...');
+    if ( reset === true )
+    {
+        $('.notice span').html('Provide the information and select "Get Password"');
+    }
+    else
+    {
+        $('.notice span').html('Master Password will be cleared in ' + cache_master_password_time.toString() + 's...');
+    }
 };
 
 let manage_master_password_timer = function()
@@ -468,17 +494,29 @@ let manage_master_password_timer = function()
 
 let handle_master_password_changed = function()
 {
-    if ( master_password_timer_id !== null )
+    if ( master_password_len_prev !== $('#master-password').val().length )
     {
-        clearInterval( master_password_timer_id );
-        master_password_timer_id = null;
+        master_password_len_prev = $('#master-password').val().length;
+        
+        if ( master_password_timer_id !== null )
+        {
+            clearInterval( master_password_timer_id );
+            master_password_timer_id = null;
+        }
+        
+        if ( master_password_len_prev > 0 )
+        {
+            cache_master_password_time = parseInt( application_settings.get('cache_master_password_time'), 10 ) * 60;
+            
+            set_notice_timer();
+            
+            master_password_timer_id = setInterval( manage_master_password_timer, 1000 );
+        }
+        else
+        {
+            set_notice_timer(true);
+        }
     }
-    
-    cache_master_password_time = parseInt( application_settings.get('cache_master_password_time'), 10 ) * 60;
-    
-    set_notice_timer();
-    
-    master_password_timer_id = setInterval( manage_master_password_timer, 1000 );
 };
 
 $('.action-hide').on( 'click', handle_win_hide );
