@@ -117,7 +117,25 @@ let load_application_setting = function( i )
     current_input.val( current_setting_value );
 };
 
+let reset_requested_chars = function()
+{
+    $('.setting.requested_chars textarea').val( available_chars );
+    $('.setting.requested_chars textarea').change();
+};
+
+let enable_advanced_setting = function()
+{
+    $('.setting.hmac_key input').show();
+    $( this ).remove();
+};
+
 $('input').each( load_application_setting );
+$('textarea').each( load_application_setting );
 
 $('input').on( 'change', handle_setting_changed );
 $('input').on( 'keyup', handle_setting_changed );
+$('textarea').on( 'change', handle_setting_changed );
+$('textarea').on( 'keyup', handle_setting_changed );
+
+$('.setting.requested_chars button').on( 'click', reset_requested_chars );
+$('.setting.hmac_key button').on( 'click', enable_advanced_setting );

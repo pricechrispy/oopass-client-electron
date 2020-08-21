@@ -139,6 +139,7 @@ html, body {
 
 .theme-wrapper .notice {
     padding: 0px 20px;
+    height: 2.8em;
 }
 
 .theme-wrapper .notice span {
@@ -243,6 +244,14 @@ html, body {
 
 .setting .text::placeholder {
     color: #404040;
+}
+
+.setting.requested_chars textarea {
+    height: 4em;
+}
+
+.setting.hmac_key input {
+    display: none;
 }
 
 /* generics to be added / removed at runtime */

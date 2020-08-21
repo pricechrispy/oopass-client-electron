@@ -40,6 +40,7 @@ let random_seed = new Uint32Array(1); // 32 bit integer
 window.crypto.getRandomValues( random_seed );
 
 const random_32bytes = crypto.createHash('md5').update(random_seed[0].toString()).digest('hex');
+const available_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
 
 const schema = {
     api_key_email: {
@@ -59,12 +60,18 @@ const schema = {
     cache_master_password_time: {
         type: 'number',
         maximum: 120,
-        minimum: 0,
+        minimum: 1,
         default: 5
+	},
+    cache_generated_password_time: {
+        type: 'number',
+        maximum: 120,
+        minimum: 1,
+        default: 15
 	},
     requested_chars: {
         type: 'string',
-        default: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+        default: available_chars
     },
     requested_length: {
         type: 'number',

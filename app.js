@@ -104,6 +104,9 @@ let create_browser_window = function() {
     ]);
     
     app_tray.setContextMenu( app_tray_context_menu );
+    app_tray.on( 'click', handle_tray_click_open );
+    app_tray.on( 'double-click', handle_tray_click_open );
+    app_tray.on( 'mouse-up', handle_tray_click_open );
     
     const ret = globalShortcut.register( 'CommandOrControl+Shift+2', handle_global_shortcut );
     

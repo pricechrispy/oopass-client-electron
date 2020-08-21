@@ -34,7 +34,15 @@
                     <label for="cache_master_password_time"><span>Enter Master Password Expiration (Minutes):</span></label>
                 </div>
                 <div class="text-parent">
-                    <input class="text" id="cache_master_password_time" type="number" name="cache_master_password_time" value="" placeholder="5" min="0" max="120" />
+                    <input class="text" id="cache_master_password_time" type="number" name="cache_master_password_time" value="" placeholder="5" min="1" max="120" />
+                </div>
+            </div>
+            <div class="setting cache_generated_password_time">
+                <div>
+                    <label for="cache_generated_password_time"><span>Enter Generated Password Expiration (Seconds):</span></label>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="cache_generated_password_time" type="number" name="cache_generated_password_time" value="" placeholder="15" min="1" max="120" />
                 </div>
             </div>
             <div class="setting server_host">
@@ -64,9 +72,21 @@
             <div class="setting requested_chars">
                 <div>
                     <label for="requested_chars"><span>Desired Password Characters:</span></label>
+                    <button>Reset</button>
                 </div>
                 <div class="text-parent">
-                    <input class="text" id="requested_chars" type="text" name="requested_chars" value="" placeholder="" />
+                    <textarea class="text" id="requested_chars" name="requested_chars"></textarea>
+                </div>
+            </div>
+            <div class="setting hmac_key">
+                <div>
+                    <span>Advanced Migration Setting</span>
+                    <br>
+                    <span>Change HMAC key to migrate devices:</span>
+                </div>
+                <div class="text-parent">
+                    <input class="text" id="hmac_key" type="text" name="hmac_key" value="" placeholder="" />
+                    <button>Show client HMAC key</button>
                 </div>
             </div>
         </div>
